@@ -36,3 +36,15 @@ npm i json-server axios
 
 "server": "json-server -p 3001 --watch item-list.json"
 
+Estructura de padres e hijos:
+`App {
+    Form,
+    NewElementList: {
+        ElementShow
+    },
+    SavedElementList: {
+        SavedElementShow
+    }
+}`
+
+
