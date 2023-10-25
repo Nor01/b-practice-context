@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import NewElementList from "./components/NewElementList";
+import axios from "axios";
+import SaveElementsList from "./components/SavedElementsList";
 
 function App() {
   const [items, setItems] = useState([]);
@@ -12,35 +15,86 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updateItems = [
-      ...items,
-      { id: crypto.randomUUID(), title: inputItem, date: Date.now() },
-    ];
-    setItems(updateItems);
+
+    axios
+      .post("http://localhost:3001/new-elements", {
+        id: crypto.randomUUID(),
+        title: inputItem,
+        date: Date.now(),
+      })
+      .then((response) => {
+        const updateItems = [...items, response.data];
+        setItems(updateItems);
+      })
+      .catch((e) => {
+        console.log("error al guardar el item", e);
+      });
   };
 
-  const handleRemoveItem = (uuid) => {
-    const updateItems = items.filter((item) => {
-      return item.id !== uuid;
-    });
+  const getAllItems = () => {
+    axios
+      .get("http://localhost:3001/new-elements")
+      .then((response) => {
+        setItems(response.data);
+      })
+      .catch((e) => {
+        console.log("error al cargar los items", e);
+      });
+  };
+  const getAllSavedItems = () => {
+    axios
+      .get("http://localhost:3001/saved-elements")
+      .then((response) => {
+        setSavedItems(response.data);
+      })
+      .catch((e) => {
+        console.log("error al cargar los items", e);
+      });
+  };
+  useEffect(() => {
+    getAllItems()
+    getAllSavedItems()
+  }, []);
 
-    setItems(updateItems);
+  const handleRemoveItem = (uuid) => {
+    axios
+      .delete(`http://localhost:3001/new-elements/${uuid}`)
+      .then(() => {
+        const updateItems = items.filter((item) => {
+          return item.id !== uuid;
+        });
+        setItems(updateItems);
+      })
+      .catch((e) => {
+        console.log("Error al borrar el item", e);
+      });
   };
 
   const handleSaveItem = (item) => {
-    const updateSavedItems = [...savedItems, item];
+    axios
+      .post("http://localhost:3001/saved-elements", item)
+      .then((response) => {
+        const updateSavedItems = [...savedItems, item];
 
-    setSavedItems(updateSavedItems);
+        setSavedItems(updateSavedItems);
 
-    handleRemoveItem(item.id);
+        handleRemoveItem(item.id);
+        console.log(response.data);
+      }).catch((e)=>{
+console.log("Error al guardar el item", e)
+      })
   };
 
   const handleRemoveSavedItem = (uuid) => {
-    const updateItems = savedItems.filter((item) => {
-      return item.id !== uuid;
-    });
+    axios.delete(`http://localhost:3001/saved-elements/${uuid}`).then(()=>{
+      const updateItems = savedItems.filter((item) => {
+        return item.id !== uuid;
+      });
+      setSavedItems(updateItems);
 
-    setSavedItems(updateItems);
+    })
+    
+
   };
 
   return (
@@ -65,61 +119,15 @@ function App() {
       </aside>
 
       <section>
-        <h2>Lista de elementos Agregados</h2>
-        {items.length === 0 ? (
-          <p>
-            <strong>No hay elementos en la lista</strong>
-          </p>
-        ) : (
-          <ul>
-            {items.map((item, index) => {
-              return (
-                <li key={index}>
-                  {item.title}
-                  <span
-                    onClick={() => {
-                      handleRemoveItem(item.id);
-                    }}
-                  >
-                    🗑️
-                  </span>
-                  <span
-                    onClick={() => {
-                      handleSaveItem(item);
-                    }}
-                  >
-                    💾
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        <h2>Lista de elementos Guardados</h2>
-
-        {savedItems.length === 0 ? (
-          <p>
-            <strong>No hay elementos en la lista</strong>
-          </p>
-        ) : (
-          <ul>
-            {savedItems.map((item, index) => {
-              return (
-                <li key={index}>
-                  {item.title}
-                  <span
-                    onClick={() => {
-                      handleRemoveSavedItem(item.id);
-                    }}
-                  >
-                    🗑️
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <NewElementList
+          items={items}
+          handleRemoveItem={handleRemoveItem}
+          handleSaveItem={handleSaveItem}
+        />
+        <SaveElementsList
+          savedItems={savedItems}
+          handleRemoveSavedItem={handleRemoveSavedItem}
+        />
       </section>
     </main>
   );
