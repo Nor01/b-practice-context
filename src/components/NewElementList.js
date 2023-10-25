@@ -1,10 +1,17 @@
 import ElementShow from "./ElementShow";
+import { useContext } from "react";
+import ItemContext from "../context";
 
-function NewElementList({items,handleRemoveItem,handleSaveItem}) {
+function NewElementList() {
+  const { items } = useContext(ItemContext);
 
-    const renderedNewItems= items.map((item)=>{
-return <li key={item.id}><ElementShow item={item} handleRemoveItem={handleRemoveItem} handleSaveItem={handleSaveItem}/></li>
-    })
+  const renderedNewItems = items.map((item) => {
+    return (
+      <li key={item.id}>
+        <ElementShow item={item} />
+      </li>
+    );
+  });
   return (
     <>
       <h2>Lista de elementos Agregados</h2>
@@ -13,9 +20,7 @@ return <li key={item.id}><ElementShow item={item} handleRemoveItem={handleRemove
           <strong>No hay elementos en la lista</strong>
         </p>
       ) : (
-        <ul>
-             {renderedNewItems}
-        </ul>
+        <ul>{renderedNewItems}</ul>
       )}
     </>
   );

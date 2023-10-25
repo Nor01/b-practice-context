@@ -1,8 +1,12 @@
 import SavedElementShow from "./SavedElementShow";
+import { useContext } from "react";
+import ItemContext from "../context";
 
-function SaveElementsList({savedItems,handleRemoveSavedItem}) {
+function SaveElementsList() {
+  const {savedItems}=useContext(ItemContext)
+
     const renderedSavedItems= savedItems.map((item)=>{
-return <li key={item.id}><SavedElementShow item={item} handleRemoveSavedItem={handleRemoveSavedItem}/></li>
+return <li key={item.id}><SavedElementShow item={item}/></li>
     })
   return (
     <>
