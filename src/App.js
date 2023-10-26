@@ -1,16 +1,26 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext,useState } from "react";
 import "./App.css";
 import NewElementList from "./components/NewElementList";
 import SaveElementsList from "./components/SavedElementsList";
 import ItemContext from "./context";
 
 function App() {
-  const { getAllItems, getAllSavedItems,handleSubmit,handleInputItemChange } = useContext(ItemContext);
+  const [inputItem, setInputItem] = useState("");
+  const { getAllNewItems, getAllSavedItems,createNewItem } =
+    useContext(ItemContext);
+
   useEffect(() => {
-    getAllItems();
+    getAllNewItems();
     getAllSavedItems();
   }, []);
 
+  const handleInputItemChange = (e) => {
+    setInputItem(e.target.value);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createNewItem(inputItem);
+  };
   return (
     <main>
       <aside>
@@ -33,8 +43,8 @@ function App() {
       </aside>
 
       <section>
-        <NewElementList/>
-        <SaveElementsList/>
+        <NewElementList />
+        <SaveElementsList />
       </section>
     </main>
   );

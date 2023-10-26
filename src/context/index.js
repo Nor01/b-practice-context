@@ -1,19 +1,12 @@
-import { createContext,useState } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 
 const ItemContext = createContext();
 function Provider({ children }) {
   const [items, setItems] = useState([]);
-  const [inputItem, setInputItem] = useState("");
   const [savedItems, setSavedItems] = useState([]);
 
-  const handleInputItemChange = (e) => {
-    setInputItem(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const createNewItem = (inputItem) => {
     axios
       .post("http://localhost:3001/new-elements", {
         id: crypto.randomUUID(),
@@ -29,7 +22,7 @@ function Provider({ children }) {
       });
   };
 
-  const getAllItems = () => {
+  const getAllNewItems = () => {
     axios
       .get("http://localhost:3001/new-elements")
       .then((response) => {
@@ -91,11 +84,9 @@ function Provider({ children }) {
 
   const functionToShare = {
     items,
-    inputItem,
     savedItems,
-    handleInputItemChange,
-    handleSubmit,
-    getAllItems,
+    createNewItem,
+    getAllNewItems,
     getAllSavedItems,
     handleRemoveItem,
     handleSaveItem,
@@ -103,7 +94,9 @@ function Provider({ children }) {
   };
   return (
     <>
-      <ItemContext.Provider value={functionToShare}>{children}</ItemContext.Provider>
+      <ItemContext.Provider value={functionToShare}>
+        {children}
+      </ItemContext.Provider>
     </>
   );
 }
