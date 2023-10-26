@@ -13,6 +13,7 @@ function App() {
     getAllNewItems();
     getAllSavedItems();
   }, []);
+<<<<<<< Updated upstream
 
   const handleInputItemChange = (e) => {
     setInputItem(e.target.value);
@@ -21,6 +22,8 @@ function App() {
     e.preventDefault();
     createNewItem(inputItem);
   };
+=======
+>>>>>>> Stashed changes
   return (
     <main>
       <aside>
