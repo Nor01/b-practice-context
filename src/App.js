@@ -13,9 +13,7 @@ function App() {
     setInputItem(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const createNewItem=()=>{
     axios
       .post("http://localhost:3001/new-elements", {
         id: crypto.randomUUID(),
@@ -29,9 +27,15 @@ function App() {
       .catch((e) => {
         console.log("error al guardar el item", e);
       });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createNewItem()
+
   };
 
-  const getAllItems = () => {
+  const getAllNewItems = () => {
     axios
       .get("http://localhost:3001/new-elements")
       .then((response) => {
@@ -52,8 +56,8 @@ function App() {
       });
   };
   useEffect(() => {
-    getAllItems()
-    getAllSavedItems()
+    getAllNewItems();
+    getAllSavedItems();
   }, []);
 
   const handleRemoveItem = (uuid) => {
@@ -80,21 +84,19 @@ function App() {
 
         handleRemoveItem(item.id);
         console.log(response.data);
-      }).catch((e)=>{
-console.log("Error al guardar el item", e)
       })
+      .catch((e) => {
+        console.log("Error al guardar el item", e);
+      });
   };
 
   const handleRemoveSavedItem = (uuid) => {
-    axios.delete(`http://localhost:3001/saved-elements/${uuid}`).then(()=>{
+    axios.delete(`http://localhost:3001/saved-elements/${uuid}`).then(() => {
       const updateItems = savedItems.filter((item) => {
         return item.id !== uuid;
       });
       setSavedItems(updateItems);
-
-    })
-    
-
+    });
   };
 
   return (
