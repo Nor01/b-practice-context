@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import axios from "axios";
 
 const ItemContext = createContext();
@@ -18,30 +18,30 @@ function Provider({ children }) {
         setItems(updateItems);
       })
       .catch((e) => {
-        console.log("error al guardar el item", e);
+        console.error("error al guardar el item", e);
       });
   };
 
-  const getAllNewItems = () => {
+  const getAllNewItems = useCallback(() => {
     axios
       .get("http://localhost:3001/new-elements")
       .then((response) => {
         setItems(response.data);
       })
       .catch((e) => {
-        console.log("error al cargar los items", e);
+        console.error("error al cargar los items", e);
       });
-  };
-  const getAllSavedItems = () => {
+  },[])
+  const getAllSavedItems = useCallback(() => {
     axios
       .get("http://localhost:3001/saved-elements")
       .then((response) => {
         setSavedItems(response.data);
       })
       .catch((e) => {
-        console.log("error al cargar los items", e);
+        console.error("error al cargar los items", e);
       });
-  };
+  },[])
 
   const handleRemoveItem = (uuid) => {
     axios
@@ -53,7 +53,7 @@ function Provider({ children }) {
         setItems(updateItems);
       })
       .catch((e) => {
-        console.log("Error al borrar el item", e);
+        console.error("Error al borrar el item", e);
       });
   };
 
@@ -66,10 +66,10 @@ function Provider({ children }) {
         setSavedItems(updateSavedItems);
 
         handleRemoveItem(item.id);
-        console.log(response.data);
+        
       })
       .catch((e) => {
-        console.log("Error al guardar el item", e);
+        console.error("Error al guardar el item", e);
       });
   };
 
@@ -82,19 +82,16 @@ function Provider({ children }) {
     });
   };
 
-  const functionToShare = {
-    items,
+  return (
+    <>
+      <ItemContext.Provider value={{items,
     savedItems,
     createNewItem,
     getAllNewItems,
     getAllSavedItems,
     handleRemoveItem,
     handleSaveItem,
-    handleRemoveSavedItem,
-  };
-  return (
-    <>
-      <ItemContext.Provider value={functionToShare}>
+    handleRemoveSavedItem,}}>
         {children}
       </ItemContext.Provider>
     </>

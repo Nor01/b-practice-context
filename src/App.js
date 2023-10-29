@@ -1,4 +1,4 @@
-import { useEffect, useContext,useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import "./App.css";
 import NewElementList from "./components/NewElementList";
 import SaveElementsList from "./components/SavedElementsList";
@@ -6,13 +6,13 @@ import ItemContext from "./context";
 
 function App() {
   const [inputItem, setInputItem] = useState("");
-  const { getAllNewItems, getAllSavedItems,createNewItem } =
+  const { getAllNewItems, getAllSavedItems, createNewItem } =
     useContext(ItemContext);
 
   useEffect(() => {
     getAllNewItems();
     getAllSavedItems();
-  }, []);
+  }, [getAllNewItems,getAllSavedItems]);
 
   const handleInputItemChange = (e) => {
     setInputItem(e.target.value);
