@@ -1,4 +1,7 @@
-function ElementShow({ item,handleRemoveItem, handleSaveItem}) {
+import { useContext } from "react";
+import ItemContext from "../context";
+function ElementShow({ item}) {
+  const {handleRemoveItem,handleSaveItem}=useContext(ItemContext)
   return (
     <>
       {item.title}
